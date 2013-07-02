@@ -109,12 +109,12 @@ int add_dev_perms(const char *name, const char *attr,
 
     node->dp.name = strdup(name);
     if (!node->dp.name)
-        return -ENOMEM;
+        goto node_free_out;
 
     if (attr) {
         node->dp.attr = strdup(attr);
         if (!node->dp.attr)
-            return -ENOMEM;
+            goto name_free_out;
     }
 
     node->dp.perm = perm;
@@ -129,6 +129,12 @@ int add_dev_perms(const char *name, const char *attr,
         list_add_tail(&dev_perms, &node->plist);
 
     return 0;
+
+name_free_out:
+    free(node->dp.name);
+node_free_out:
+    free(node);
+    return -ENOMEM;
 }
 
 void fixup_sys_perms(const char *upath)
@@ -289,6 +295,9 @@ static void add_platform_device(const char *path)
     INFO("adding platform device %s (%s)\n", name, path);
 
     bus = (platform_node*) calloc(1, sizeof(struct platform_node));
+    if (!bus)
+        return;
+
     bus->path = strdup(path);
     bus->path_len = path_len;
     bus->name = bus->path + (name - path);

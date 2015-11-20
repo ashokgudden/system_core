@@ -121,7 +121,10 @@ int add_environment(const char *key, const char *val)
         /* Add entry if a free slot is available */
         if (ENV[n] == NULL) {
             char* entry;
-            asprintf(&entry, "%s=%s", key, val);
+            if (asprintf(&entry, "%s=%s", key, val) == -1) {
+                ERROR("out of memory\n");
+                return -1;
+            }
             ENV[n] = entry;
             return 0;
         }

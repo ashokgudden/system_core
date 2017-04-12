@@ -296,6 +296,10 @@ on late-init
 
 on post-fs
     start logd
+
+    # Mount debugfs to /sys/kernel/debug
+    mount debugfs debugfs /d
+
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
     # Mount shared so changes propagate into child namespaces

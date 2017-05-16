@@ -42,6 +42,7 @@ OUR_TOOLS := \
     restart \
     sendevent \
     start \
+    klog \
     stop \
     top \
 
